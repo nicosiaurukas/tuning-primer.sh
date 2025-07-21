@@ -25,7 +25,6 @@ Currently it handles recomendations for the following:
 * Max Connections
 * Worker Threads
 * Key Buffer [MyISAM only]
-* Query Cache
 * Sort Buffer
 * Joins
 * Temp Tables
@@ -36,12 +35,10 @@ Currently it handles recomendations for the following:
 
 ### Recent Changes
 
-* Updated to (at least mostly) support MySQL 5.7+ and MariaDB
-* A lot of cleanup of the underlying code
-* Better handling of terminals and redirection (got rid of the hardcoded color sequences, switched to proper terminfo)
-* <a href="https://github.com/BMDan/tuning-primer.sh/commit/6b5d866f7525b250bb4ecb0deffd66531e375143">Fixed</a> the old ``./tuning-primer.sh: line 402: export: `2097152': not a valid identifier`` bug
-
-More, as always, in the <a href="https://github.com/BMDan/tuning-primer.sh/commits/master">changelog</a>.
+*Query Cache Checks: These are now automatically skipped in MySQL 8.0+ and an informative message is displayed.
+*Deprecated Variables: These are ignored or zeroed (innodb_additional_mem_pool_size, table_cache, etc.) if the version is 8.0+.
+*Conditional Checks: Functions have been added to detect MySQL 8.0+ or MariaDB, and the checks are adapted accordingly.
+*Friendly Messages: If a variable no longer exists, a clear warning is displayed instead of failing.
 
 ---
 ### Legal Stuff
