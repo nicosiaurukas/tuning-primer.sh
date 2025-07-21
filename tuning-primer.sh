@@ -461,8 +461,8 @@ check_mysql_version () {
 
 ## -- Print Version Info -- ##
 
-        mysql_variable \'version\' mysql_version
-        mysql_variable \'version_compile_machine\' mysql_version_compile_machine
+        mysql_variable 'version' mysql_version
+        mysql_variable 'version_compile_machine' mysql_version_compile_machine
         
 if [ "$mysql_version_num" -lt 050000 ]; then
         cecho "MySQL Version $mysql_version $mysql_version_compile_machine is EOL please upgrade to MySQL 4.1 or later" boldred
@@ -483,8 +483,8 @@ post_uptime_warning () {
 #                                                                       #
 #########################################################################
 
-        mysql_status \'Uptime\' uptime
-        mysql_status \'Threads_connected\' threads
+        mysql_status 'Uptime' uptime
+        mysql_status 'Threads_connected' threads
         queries_per_sec=$(($questions/$uptime))
         human_readable_time $uptime uptimeHR
 
@@ -523,10 +523,10 @@ check_slow_queries () {
 ## -- Slow Queries -- ## 
         cecho "SLOW QUERIES" boldblue
 
-        mysql_status \'Slow_queries\' slow_queries
-        mysql_variable \'long_query_time\' long_query_time
-        mysql_variable \'log%queries\' log_slow_queries
-        mysql_variable \'slow_query_log\' slow_query_log
+        mysql_status 'Slow_queries' slow_queries
+        mysql_variable 'long_query_time' long_query_time
+        mysql_variable 'log%queries' log_slow_queries
+        mysql_variable 'slow_query_log' slow_query_log
         
         PREFERRED_QUERY_TIME=5
         if [ -z "$log_slow_queries" ] ; then
@@ -571,11 +571,11 @@ check_binary_log () {
 
         cecho "BINARY UPDATE LOG" boldblue
 
-        mysql_variable \'log_bin\' log_bin
-        mysql_variable \'max_binlog_size\' max_binlog_size
-        mysql_variable \'expire_logs_days\' expire_logs_days
-        mysql_variable \'sync_binlog\' sync_binlog
-        #  mysql_variable \'max_binlog_cache_size\' max_binlog_cache_size
+        mysql_variable 'log_bin' log_bin
+        mysql_variable 'max_binlog_size' max_binlog_size
+        mysql_variable 'expire_logs_days' expire_logs_days
+        mysql_variable 'sync_binlog' sync_binlog
+        #  mysql_variable 'max_binlog_cache_size' max_binlog_cache_size
 
         if [ "$log_bin" = 'ON' ] ; then
                 cecho "The binary update log is enabled"
@@ -605,9 +605,9 @@ check_used_connections () {
 
 ## -- Used Connections -- ##
 
-        mysql_variable \'max_connections\' max_connections
-        mysql_status \'Max_used_connections\' max_used_connections
-        mysql_status \'Threads_connected\' threads_connected
+        mysql_variable 'max_connections' max_connections
+        mysql_status 'Max_used_connections' max_used_connections
+        mysql_status 'Threads_connected' threads_connected
 
         connections_ratio=$(($max_used_connections*100/$max_connections))
 
@@ -649,13 +649,13 @@ check_threads() {
 
         cecho "WORKER THREADS" boldblue
 
-        mysql_status \'Threads_created\' threads_created1
+        mysql_status 'Threads_created' threads_created1
         sleep 1
-        mysql_status \'Threads_created\' threads_created2
+        mysql_status 'Threads_created' threads_created2
 
-        mysql_status \'Threads_cached\' threads_cached
-        mysql_status \'Uptime\' uptime
-        mysql_variable \'thread_cache_size\' thread_cache_size
+        mysql_status 'Threads_cached' threads_cached
+        mysql_status 'Uptime' uptime
+        mysql_variable 'thread_cache_size' thread_cache_size
 
         historic_threads_per_sec=$(($threads_created1/$uptime))
         current_threads_per_sec=$(($threads_created2-$threads_created1))
@@ -682,14 +682,14 @@ check_key_buffer_size () {
 
         cecho "KEY BUFFER" boldblue
 
-        mysql_status \'Key_read_requests\' key_read_requests
-        mysql_status \'Key_reads\' key_reads
-        mysql_status \'Key_blocks_used\' key_blocks_used
-        mysql_status \'Key_blocks_unused\' key_blocks_unused
-        mysql_variable \'key_cache_block_size\' key_cache_block_size
-        mysql_variable \'key_buffer_size\' key_buffer_size
-        mysql_variable \'datadir\' datadir
-        mysql_variable \'version_compile_machine\' mysql_version_compile_machine
+        mysql_status 'Key_read_requests' key_read_requests
+        mysql_status 'Key_reads' key_reads
+        mysql_status 'Key_blocks_used' key_blocks_used
+        mysql_status 'Key_blocks_unused' key_blocks_unused
+        mysql_variable 'key_cache_block_size' key_cache_block_size
+        mysql_variable 'key_buffer_size' key_buffer_size
+        mysql_variable 'datadir' datadir
+        mysql_variable 'version_compile_machine' mysql_version_compile_machine
         myisam_indexes=$($MYSQL_COMMAND -Bse "/*!50000 SELECT IFNULL(SUM(INDEX_LENGTH),0) from information_schema.TABLES where ENGINE='MyISAM' */")
 
         if [ -z $myisam_indexes ] ; then
@@ -761,14 +761,22 @@ check_query_cache () {
 
         cecho "QUERY CACHE" boldblue
 
-        mysql_variable \'version\' mysql_version
-        mysql_variable \'query_cache_size\' query_cache_size
-        mysql_variable \'query_cache_limit\' query_cache_limit
-        mysql_variable \'query_cache_min_res_unit\' query_cache_min_res_unit
-        mysql_status \'Qcache_free_memory\' qcache_free_memory
-        mysql_status \'Qcache_total_blocks\' qcache_total_blocks
-        mysql_status \'Qcache_free_blocks\' qcache_free_blocks
-        mysql_status \'Qcache_lowmem_prunes\' qcache_lowmem_prunes
+        mysql_variable 'version' mysql_version
+        mysql_variable 'query_cache_size' query_cache_size
+        mysql_variable 'query_cache_limit' query_cache_limit
+        mysql_variable 'query_cache_min_res_unit' query_cache_min_res_unit
+        mysql_status 'Qcache_free_memory' qcache_free_memory
+        mysql_status 'Qcache_total_blocks' qcache_total_blocks
+        mysql_status 'Qcache_free_blocks' qcache_free_blocks
+        mysql_status 'Qcache_lowmem_prunes' qcache_lowmem_prunes
+
+        if is_mysql_8_or_newer; then
+                cecho "Query Cache no longer existe en MySQL 8.0 y superior." yellow
+                return
+        fi
+        if is_mariadb; then
+                cecho "MariaDB aún soporta Query Cache, chequeando..." green
+        fi
 
         if [ -z $query_cache_size ] ; then
                 cecho "You are using MySQL $mysql_version, no query cache is supported." red
@@ -826,15 +834,15 @@ check_sort_operations () {
 
         cecho "SORT OPERATIONS" boldblue
 
-        mysql_status \'Sort_merge_passes\' sort_merge_passes
-        mysql_status \'Sort_scan\' sort_scan
-        mysql_status \'Sort_range\' sort_range
-        mysql_variable \'sort_buffer_size\' sort_buffer_size 
-        mysql_variable \'read_rnd_buffer_size\' read_rnd_buffer_size 
+        mysql_status 'Sort_merge_passes' sort_merge_passes
+        mysql_status 'Sort_scan' sort_scan
+        mysql_status 'Sort_range' sort_range
+        mysql_variable 'sort_buffer_size' sort_buffer_size 
+        mysql_variable 'read_rnd_buffer_size' read_rnd_buffer_size 
 
         total_sorts=$(($sort_scan+$sort_range))
         if [ -z $read_rnd_buffer_size ] ; then
-                mysql_variable \'record_buffer\' read_rnd_buffer_size
+                mysql_variable 'record_buffer' read_rnd_buffer_size
         fi
 
         ## Correct for rounding error in mysqld where 512K != 524288 ##
@@ -885,9 +893,9 @@ check_join_operations () {
 
         cecho "JOINS" boldblue
 
-        mysql_status \'Select_full_join\' select_full_join
-        mysql_status \'Select_range_check\' select_range_check
-        mysql_variable \'join_buffer_size\' join_buffer_size
+        mysql_status 'Select_full_join' select_full_join
+        mysql_status 'Select_range_check' select_range_check
+        mysql_variable 'join_buffer_size' join_buffer_size
         
         ## Some 4K is dropped from join_buffer_size adding it back to make sane ##
         ## handling of human-readable conversion ## 
@@ -945,10 +953,10 @@ check_tmp_tables () {
 
         cecho "TEMP TABLES" boldblue
 
-        mysql_status \'Created_tmp_tables\' created_tmp_tables 
-        mysql_status \'Created_tmp_disk_tables\' created_tmp_disk_tables
-        mysql_variable \'tmp_table_size\' tmp_table_size
-        mysql_variable \'max_heap_table_size\' max_heap_table_size
+        mysql_status 'Created_tmp_tables' created_tmp_tables 
+        mysql_status 'Created_tmp_disk_tables' created_tmp_disk_tables
+        mysql_variable 'tmp_table_size' tmp_table_size
+        mysql_variable 'max_heap_table_size' max_heap_table_size
 
 
         if [ $created_tmp_tables -eq 0 ] ; then
@@ -982,8 +990,8 @@ check_open_files () {
 ## -- Open Files Limit -- ## 
         cecho "OPEN FILES LIMIT" boldblue
 
-        mysql_variable \'open_files_limit\' open_files_limit
-        mysql_status   \'Open_files\' open_files
+        mysql_variable 'open_files_limit' open_files_limit
+        mysql_status   'Open_files' open_files
         
         if [ -z $open_files_limit ] || [ $open_files_limit -eq 0 ] ; then
                 open_files_limit=$(ulimit -n)
@@ -1022,16 +1030,19 @@ check_table_cache () {
 
         cecho "TABLE CACHE" boldblue
 
-        mysql_variable \'datadir\' datadir
-        mysql_variable \'table_cache\' table_cache
+        mysql_variable 'datadir' datadir
+        if is_mysql_8_or_newer; then
+                table_cache=0
+                cecho "MySQL 8.0+ ya no usa table_cache, solo table_open_cache y table_definition_cache." yellow
+        else
+                mysql_variable 'table_cache' table_cache
+        fi
+        mysql_variable 'table_open_cache' table_open_cache
+        mysql_variable 'table_definition_cache' table_definition_cache
 
-        ## /* MySQL +5.1 version of table_cache */ ## 
-        mysql_variable \'table_open_cache\' table_open_cache
-        mysql_variable \'table_definition_cache\' table_definition_cache
-
-        mysql_status \'Open_tables\' open_tables
-        mysql_status \'Opened_tables\' opened_tables
-        mysql_status \'Open_table_definitions\' open_table_definitions
+        mysql_status 'Open_tables' open_tables
+        mysql_status 'Opened_tables' opened_tables
+        mysql_status 'Open_table_definitions' open_table_definitions
  
         table_count=$($MYSQL_COMMAND -Bse "/*!50000 SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE' */")
 
@@ -1102,10 +1113,10 @@ check_table_locking () {
 
         cecho "TABLE LOCKING" boldblue
 
-        mysql_status \'Table_locks_waited\' table_locks_waited
-        mysql_status \'Table_locks_immediate\' table_locks_immediate
-        mysql_variable \'concurrent_insert\' concurrent_insert
-        mysql_variable \'low_priority_updates\' low_priority_updates
+        mysql_status 'Table_locks_waited' table_locks_waited
+        mysql_status 'Table_locks_immediate' table_locks_immediate
+        mysql_variable 'concurrent_insert' concurrent_insert
+        mysql_variable 'low_priority_updates' low_priority_updates
         if [ "$concurrent_insert" = 'ON' ]; then
                 concurrent_insert=1
         elif [ "$concurrent_insert" = 'OFF' ]; then
@@ -1148,12 +1159,12 @@ check_table_scans () {
 
         cecho "TABLE SCANS" boldblue
 
-        mysql_status \'Com_select\' com_select
-        mysql_status \'Handler_read_rnd_next\' read_rnd_next
-        mysql_variable \'read_buffer_size\' read_buffer_size
+        mysql_status 'Com_select' com_select
+        mysql_status 'Handler_read_rnd_next' read_rnd_next
+        mysql_variable 'read_buffer_size' read_buffer_size
 
         if [ -z $read_buffer_size ] ; then
-                mysql_variable \'record_buffer\' read_buffer_size
+                mysql_variable 'record_buffer' read_buffer_size
         fi
 
         human_readable $read_buffer_size read_buffer_sizeHR
@@ -1188,7 +1199,7 @@ function check_innodb_status()
   ## See http://bugs.mysql.com/59393
 
   if [ "$mysql_version_num" -lt 050603 ] ; then
-    mysql_variable \'have_innodb\' have_innodb
+    mysql_variable 'have_innodb' have_innodb
   fi
 
   if [ "$mysql_version_num" -lt 050500 ] && [ "$have_innodb" = "YES" ] ; then
@@ -1198,35 +1209,35 @@ function check_innodb_status()
   if [ "${mysql_version//Maria}" != "${mysql_version}" ] || \
      [ "${mysql_version_num}" -ge 050700 ]; then
     # In MariaDB and MySQL >=5.7, InnoDB is always present, excepting Rocks and the like.
-    mysql_variable \'ignore_builtin_innodb\' ignore_builtin_innodb
+    mysql_variable 'ignore_builtin_innodb' ignore_builtin_innodb
     if [ "$ignore_builtin_innodb" = "ON" ] ; then
       innodb_enabled=0
     else
       innodb_enabled=1
     fi
   elif [ "$mysql_version_num" -ge 050500 ] && [ "$mysql_version_num" -lt 050512 ] ; then 
-    mysql_variable \'ignore_builtin_innodb\' ignore_builtin_innodb
+    mysql_variable 'ignore_builtin_innodb' ignore_builtin_innodb
     if [ "$ignore_builtin_innodb" = "ON" ] || [ $have_innodb = "NO" ] ; then
       innodb_enabled=0
     else
       innodb_enabled=1
     fi
   elif [ "$major_version"  = '5.5' ] && [ "$mysql_version_num" -ge 050512 ] ; then
-    mysql_variable \'ignore_builtin_innodb\' ignore_builtin_innodb
+    mysql_variable 'ignore_builtin_innodb' ignore_builtin_innodb
     if [ "$ignore_builtin_innodb" = "ON" ] ; then
       innodb_enabled=0
     else
       innodb_enabled=1
     fi
   elif [ "$mysql_version_num" -ge 050600 ] && [ "$mysql_version_num" -lt 050603 ] ; then
-    mysql_variable \'ignore_builtin_innodb\' ignore_builtin_innodb
+    mysql_variable 'ignore_builtin_innodb' ignore_builtin_innodb
     if [ "$ignore_builtin_innodb" = "ON" ] || [ $have_innodb = "NO" ] ; then
       innodb_enabled=0
     else
       innodb_enabled=1
     fi
   elif [ "$major_version" = '5.6' ] && [ "$mysql_version_num" -ge 050603 ] ; then
-    mysql_variable \'ignore_builtin_innodb\' ignore_builtin_innodb
+    mysql_variable 'ignore_builtin_innodb' ignore_builtin_innodb
     if [ "$ignore_builtin_innodb" = "ON" ] ; then
       innodb_enabled=0
     else
@@ -1235,36 +1246,40 @@ function check_innodb_status()
   fi
 
   if [ "$innodb_enabled" = 1 ] ; then
-    mysql_variable \'innodb_buffer_pool_size\' innodb_buffer_pool_size
-    mysql_variable \'innodb_additional_mem_pool_size\' innodb_additional_mem_pool_size
-    mysql_variable \'innodb_fast_shutdown\' innodb_fast_shutdown
-    mysql_variable \'innodb_flush_log_at_trx_commit\' innodb_flush_log_at_trx_commit
-    mysql_variable \'innodb_locks_unsafe_for_binlog\' innodb_locks_unsafe_for_binlog
-    mysql_variable \'innodb_log_buffer_size\' innodb_log_buffer_size
-    mysql_variable \'innodb_log_file_size\' innodb_log_file_size
-    mysql_variable \'innodb_log_files_in_group\' innodb_log_files_in_group
-    mysql_variable \'innodb_safe_binlog\' innodb_safe_binlog
-    mysql_variable \'innodb_thread_concurrency\' innodb_thread_concurrency
+    mysql_variable 'innodb_buffer_pool_size' innodb_buffer_pool_size
+    if is_mysql_8_or_newer; then
+      innodb_additional_mem_pool_size=0
+    else
+      mysql_variable 'innodb_additional_mem_pool_size' innodb_additional_mem_pool_size
+    fi
+    mysql_variable 'innodb_fast_shutdown' innodb_fast_shutdown
+    mysql_variable 'innodb_flush_log_at_trx_commit' innodb_flush_log_at_trx_commit
+    mysql_variable 'innodb_locks_unsafe_for_binlog' innodb_locks_unsafe_for_binlog
+    mysql_variable 'innodb_log_buffer_size' innodb_log_buffer_size
+    mysql_variable 'innodb_log_file_size' innodb_log_file_size
+    mysql_variable 'innodb_log_files_in_group' innodb_log_files_in_group
+    mysql_variable 'innodb_safe_binlog' innodb_safe_binlog
+    mysql_variable 'innodb_thread_concurrency' innodb_thread_concurrency
 
     cecho "INNODB STATUS" boldblue
     innodb_indexes=$($MYSQL_COMMAND -Bse "/*!50000 SELECT IFNULL(SUM(INDEX_LENGTH),0) from information_schema.TABLES where ENGINE='InnoDB' */")
     innodb_data=$($MYSQL_COMMAND -Bse "/*!50000 SELECT IFNULL(SUM(DATA_LENGTH),0) from information_schema.TABLES where ENGINE='InnoDB' */")
     
     if [ ! -z "$innodb_indexes" ] ; then
-      mysql_status \'Innodb_buffer_pool_pages_data\' innodb_buffer_pool_pages_data
-      mysql_status \'Innodb_buffer_pool_pages_misc\' innodb_buffer_pool_pages_misc
-      mysql_status \'Innodb_buffer_pool_pages_free\' innodb_buffer_pool_pages_free
-      mysql_status \'Innodb_buffer_pool_pages_total\' innodb_buffer_pool_pages_total
+      mysql_status 'Innodb_buffer_pool_pages_data' innodb_buffer_pool_pages_data
+      mysql_status 'Innodb_buffer_pool_pages_misc' innodb_buffer_pool_pages_misc
+      mysql_status 'Innodb_buffer_pool_pages_free' innodb_buffer_pool_pages_free
+      mysql_status 'Innodb_buffer_pool_pages_total' innodb_buffer_pool_pages_total
 
-      mysql_status \'Innodb_buffer_pool_read_ahead_seq\' innodb_buffer_pool_read_ahead_seq
-      mysql_status \'Innodb_buffer_pool_read_requests\' innodb_buffer_pool_read_requests
+      mysql_status 'Innodb_buffer_pool_read_ahead_seq' innodb_buffer_pool_read_ahead_seq
+      mysql_status 'Innodb_buffer_pool_read_requests' innodb_buffer_pool_read_requests
 
-      mysql_status \'Innodb_os_log_pending_fsyncs\' innodb_os_log_pending_fsyncs
-      mysql_status \'Innodb_os_log_pending_writes\'   innodb_os_log_pending_writes
-      mysql_status \'Innodb_log_waits\' innodb_log_waits
+      mysql_status 'Innodb_os_log_pending_fsyncs' innodb_os_log_pending_fsyncs
+      mysql_status 'Innodb_os_log_pending_writes'   innodb_os_log_pending_writes
+      mysql_status 'Innodb_log_waits' innodb_log_waits
 
-      mysql_status \'Innodb_row_lock_time\' innodb_row_lock_time
-      mysql_status \'Innodb_row_lock_waits\' innodb_row_lock_waits
+      mysql_status 'Innodb_row_lock_time' innodb_row_lock_time
+      mysql_status 'Innodb_row_lock_waits' innodb_row_lock_waits
 
       human_readable $innodb_indexes innodb_indexesHR
       cecho "Current InnoDB index space = $innodb_indexesHR $unit"
@@ -1292,25 +1307,25 @@ total_memory_used () {
 ## -- Total Memory Usage -- ##
         cecho "MEMORY USAGE" boldblue
 
-        mysql_variable \'read_buffer_size\' read_buffer_size
-        mysql_variable \'read_rnd_buffer_size\' read_rnd_buffer_size
-        mysql_variable \'sort_buffer_size\' sort_buffer_size
-        mysql_variable \'thread_stack\' thread_stack
-        mysql_variable \'max_connections\' max_connections
-        mysql_variable \'join_buffer_size\' join_buffer_size
-        mysql_variable \'tmp_table_size\' tmp_table_size
-        mysql_variable \'max_heap_table_size\' max_heap_table_size
-        mysql_variable \'log_bin\' log_bin
-        mysql_status \'Max_used_connections\' max_used_connections
+        mysql_variable 'read_buffer_size' read_buffer_size
+        mysql_variable 'read_rnd_buffer_size' read_rnd_buffer_size
+        mysql_variable 'sort_buffer_size' sort_buffer_size
+        mysql_variable 'thread_stack' thread_stack
+        mysql_variable 'max_connections' max_connections
+        mysql_variable 'join_buffer_size' join_buffer_size
+        mysql_variable 'tmp_table_size' tmp_table_size
+        mysql_variable 'max_heap_table_size' max_heap_table_size
+        mysql_variable 'log_bin' log_bin
+        mysql_status 'Max_used_connections' max_used_connections
 
         if [ "$major_version" = "3.23" ] ; then
-                mysql_variable \'record_buffer\' read_buffer_size
-                mysql_variable \'record_rnd_buffer\' read_rnd_buffer_size
-                mysql_variable \'sort_buffer\' sort_buffer_size
+                mysql_variable 'record_buffer' read_buffer_size
+                mysql_variable 'record_rnd_buffer' read_rnd_buffer_size
+                mysql_variable 'sort_buffer' sort_buffer_size
         fi
 
         if [ "$log_bin" = "ON" ] ; then
-                mysql_variable \'binlog_cache_size\' binlog_cache_size
+                mysql_variable 'binlog_cache_size' binlog_cache_size
         else
                 binlog_cache_size=0
         fi
@@ -1325,26 +1340,34 @@ total_memory_used () {
         per_thread_buffers=$(echo "($read_buffer_size+$read_rnd_buffer_size+$sort_buffer_size+$thread_stack+$join_buffer_size+$binlog_cache_size)*$max_connections" | bc -l)
         per_thread_max_buffers=$(echo "($read_buffer_size+$read_rnd_buffer_size+$sort_buffer_size+$thread_stack+$join_buffer_size+$binlog_cache_size)*$max_used_connections" | bc -l)
 
-        mysql_variable \'innodb_buffer_pool_size\' innodb_buffer_pool_size
+        mysql_variable 'innodb_buffer_pool_size' innodb_buffer_pool_size
         if [ -z $innodb_buffer_pool_size ] ; then
         innodb_buffer_pool_size=0
         fi
 
-        mysql_variable \'innodb_additional_mem_pool_size\' innodb_additional_mem_pool_size
-        if [ -z $innodb_additional_mem_pool_size ] ; then
-        innodb_additional_mem_pool_size=0
+        if is_mysql_8_or_newer; then
+                innodb_additional_mem_pool_size=0
+        else
+                mysql_variable 'innodb_additional_mem_pool_size' innodb_additional_mem_pool_size
+                if [ -z $innodb_additional_mem_pool_size ] ; then
+                innodb_additional_mem_pool_size=0
+                fi
         fi
 
-        mysql_variable \'innodb_log_buffer_size\' innodb_log_buffer_size
+        mysql_variable 'innodb_log_buffer_size' innodb_log_buffer_size
         if [ -z $innodb_log_buffer_size ] ; then
         innodb_log_buffer_size=0
         fi
 
-        mysql_variable \'key_buffer_size\' key_buffer_size
+        mysql_variable 'key_buffer_size' key_buffer_size
 
-        mysql_variable \'query_cache_size\' query_cache_size
-        if [ -z $query_cache_size ] ; then
-        query_cache_size=0
+        if is_mysql_8_or_newer; then
+                query_cache_size=0
+        else
+                mysql_variable 'query_cache_size' query_cache_size
+                if [ -z $query_cache_size ] ; then
+                query_cache_size=0
+                fi
         fi
 
         global_buffers=$(echo "$innodb_buffer_pool_size+$innodb_additional_mem_pool_size+$innodb_log_buffer_size+$key_buffer_size+$query_cache_size" | bc -l)
@@ -1402,7 +1425,7 @@ shared_info () {
         # export mysql_version_num=$($MYSQL_COMMAND -Bse "SELECT LEFT(REPLACE(SUBSTRING_INDEX(VERSION(), '-', +1), '.', ''),4)" )
         export mysql_version_num=$($MYSQL_COMMAND -Bse "SELECT VERSION()" | 
                 awk -F \. '{ printf "%02d", $1; printf "%02d", $2; printf "%02d", $3 }')
-        mysql_status \'Questions\' questions
+        mysql_status 'Questions' questions
 #       socket_owner=$(find -L $socket -printf '%u\n')
         socket_owner=$(ls -nH $socket | awk '{ print $3 }')
 }
@@ -1442,6 +1465,26 @@ get_system_info () {
     fi
 }
 
+# === AGREGAR FUNCIONES DE DETECCIÓN DE VERSIÓN ===
+get_mysql_major_version() {
+  mysql_version=$($MYSQL_COMMAND -Bse "SELECT VERSION()" | awk -F. '{print $1"."$2}')
+  echo $mysql_version
+}
+
+is_mysql_8_or_newer() {
+  version=$(get_mysql_major_version)
+  major=$(echo $version | cut -d. -f1)
+  if [ "$major" -ge 8 ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+is_mariadb() {
+  $MYSQL_COMMAND -Bse "SELECT VERSION()" | grep -qi mariadb
+  return $?
+}
 
 ## Optional Components Groups ##
 
@@ -1589,3 +1632,4 @@ case $mode in
     exit 1  
     ;;
 esac
+
